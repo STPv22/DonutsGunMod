@@ -1,72 +1,45 @@
-import { addRecipe } from "./addRecipe";
+import PistolItem from "./guns/Pistol";
+import AssaultRifle from "./guns/AssaultRifle";
 
-//ModAPI.meta.icon("");
-ModAPI.meta.title("Donut's Bullshit Crafting");
-ModAPI.meta.version("v0.1");
-ModAPI.meta.description("Based off of this video: <a>https://www.youtube.com/watch?v=syPUpzWGlJY</a>");
-ModAPI.meta.credits("STPv22");
+const itemTexture = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADySURBVFhH7ZQxDoMwDEVNr4G6VmJC6mk4Itdh7VpxjsBPDaKVCLZxypInIccg5zs/CVQoKAj8uHLjeETouo6HvlQcU3yJ932PIKkTceRAFH8NA6dE3IzbVogdQBOPtuVXfk5IJ8jWhKY4SxPaQvcmLEWuTUj/A1sqiEEcTQBENDWjvh3mvZtxccLiwMqvE0DrhNUBCCy1KSdAUsPiwFYcpM5ENrYWh3tdI4cT4dk0MSKPXzMSRSC+PMi14mcO4e7esv2iJqyHEGDVPCR6jyMC5luERXOfuoY7QFi8MKsDe6tXk8OBv7Ge/E96DZeKFwoOEE1wUX7TFh5zsgAAAABJRU5ErkJggg==";
+ModAPI.meta.title("Donut's Gun Mod");
+ModAPI.meta.version("wIP");
+ModAPI.meta.icon(itemTexture);
+ModAPI.meta.description("Requires AsyncSink. So far just skidded code from radman");
 
-addRecipe("diamond_block", 
-    true, 
-    {
-        "D": {
-            type: "block",
-            id: "dirt" // Using dirt blocks
-        }
-    },
-    [
-        "DDD",
-        "DDD",
-        "DDD"
-    ]);
+ModAPI.dedicatedServer.appendCode(PistolItem);
+ModAPI.dedicatedServer.appendCode(AssaultRifle);
+var pistol_item = PistolItem();
+var ar_item = AssaultRifle();
 
-    addRecipe("iron_shovel", 
-        false, 
+ModAPI.addEventListener("lib:asyncsink", async () => {
+    ModAPI.addEventListener("custom:asyncsink_reloaded", ()=>{
+        ModAPI.mc.renderItem.registerItem(pistol_item, ModAPI.util.str("pistol"));
+        ModAPI.mc.renderItem.registerItem(ar_item, ModAPI.util.str("assaultrifle"));
+    });
+    AsyncSink.L10N.set("item.pistol.name", "Pistol");
+    AsyncSink.L10N.set("item.assaultrifle.name", "Assault Rifle");
+    AsyncSink.setFile("resourcepacks/AsyncSinkLib/assets/minecraft/models/item/pistol.json", JSON.stringify(
         {
-            "D": {
-                type: "item",
-                id: "stick"
+            "parent": "builtin/generated",
+            "textures": {
+                "layer0": "items/pistol"
             },
-            "#": {
-                type: "block",
-                id: "tnt"
-            }
-        },
-        [
-            " # ",
-            " D ",
-            " D "
-        ]);
-        addRecipe("gold_pickaxe", 
-            false, 
-            {
-                "D": {
-                    type: "block",
-                    id: "gold" // Using dirt blocks
+            "display": {
+                "thirdperson": {
+                    "rotation": [ 5, 80, -45 ],
+                    "translation": [ 0, 1, -3 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
                 },
-                "#": {
-                    type: "item",
-                    id: "stick" // Using dirt blocks
-                },
-                "S": {
-                    type: "block",
-                    id: "soulsand" // Using dirt blocks
-                },
-                "O": {
-                    type: "item",
-                    id: "firecharge" // Using dirt blocks
-                },
-                "V": {
-                    type: "item",
-                    id: "magma_cream" // Using dirt blocks
-                },
-                "G": {
-                    type: "item",
-                    id: "leather" // Using dirt blocks
+                "firstperson": {
+                    "rotation": [ 0, -135, 25 ],
+                    "translation": [ 0, 4, 2 ],
+                    "scale": [ 1.8, 1.8, 1.8 ]
                 }
-            },
-            [
-                "DDD",
-                "S#O",
-                "V#G"
-            ]);
+            }
+        }
+    ));
+    AsyncSink.setFile("resourcepacks/AsyncSinkLib/assets/minecraft/textures/items/pistol.png", await (await fetch(
+        itemTexture
+    )).arrayBuffer());
+});

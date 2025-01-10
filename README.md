@@ -1,4 +1,16 @@
-# Example TypeScript Mod
+# just skidded code rn
+## TODO
+- [ ] add reload mechanics
+- [ ] fix recoil
+- [ ] different kinds of bullet indicators 
+    - [ ] bullet entity/particles for viewing bullets
+    - [ ] hit indicator
+    - [ ] damage indicator like fortnite or smthn
+- [ ] add automatic and manual
+- [ ] shotgun
+
+![guy yapping abt guns idk](image.png)
+
 [![NodeJS with Webpack](https://github.com/eaglerforge/example-typescript-mod/actions/workflows/bun-build.yml/badge.svg)](https://github.com/eaglerforge/example-typescript-mod/actions/workflows/webpack.yml) [![esbuild](https://github.com/eaglerforge/example-typescript-mod/actions/workflows/esbuild.yml/badge.svg)](https://github.com/eaglerforge/example-typescript-mod/actions/workflows/Buildtest.yml)
 
 ## How to build?
