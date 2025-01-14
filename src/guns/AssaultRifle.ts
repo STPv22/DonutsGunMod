@@ -1,5 +1,4 @@
 export default function AssaultRifle() {
-    var recoilSpeed = 1; //recoil controller
     var DamageSourceClass = ModAPI.reflect.getClassByName("DamageSource");
     var creativeMiscTab = ModAPI.reflect.getClassById("net.minecraft.creativetab.CreativeTabs").staticVariables.tabMisc;
     var itemClass = ModAPI.reflect.getClassById("net.minecraft.item.Item");
@@ -50,7 +49,7 @@ export default function AssaultRifle() {
         var stepZ = dirZ / distance;
 
         // Define the number of particles and the step size
-        var numParticles = 75;
+        var numParticles = 50;
         var stepSize = distance / numParticles;
 
         // Spawn particles along the line
@@ -60,11 +59,6 @@ export default function AssaultRifle() {
             var posZ = playerZ + stepZ * i * stepSize;
             world.spawnParticle(enumParticleSmoke, posX, posY, posZ, 0, 0, 0, [0]);
         }
-        // world.spawnParticle(enumParticleSmoke, player.posX, player.posY + eyeMod, player.posZ, 0, 0, 0, [0]);
-        // world.spawnParticle(enumParticleSmoke, player.posX, player.posY + eyeMod, player.posZ, 0, 0, 0, [0]);
-        // world.spawnParticle(enumParticleSmoke, targetPosition.xCoord, targetPosition.yCoord, targetPosition.zCoord, 0, 0, 0, [0]);
-        // world.spawnParticle(enumParticleSmoke, targetPosition.xCoord, targetPosition.yCoord, targetPosition.zCoord, 0, 0, 0, [0]);
-
         // Iterate through all entities to find the one the player is looking at
         for (var i = 0; i < entities.length; i++) {
             if (!entities[i]) {
@@ -123,7 +117,7 @@ export default function AssaultRifle() {
             entityplayer.setItemInUse($itemstack, nmi_AssaultRifle.prototype.$getMaxItemUseDuration($itemstack));
             if (shotentitydata != null){
                 if (world.isRemote) {
-                    recoilSpeed += 4;
+
                 } else {
                     shotentitydata.entity.attackEntityFrom(cactus, 10 + (16 * shotentitydata.intheadshot));
                     if (shotentitydata.headshot) {

@@ -3,7 +3,7 @@
 - [ ] add reload mechanics
 - [ ] fix recoil
 - [ ] different kinds of bullet indicators 
-    - [ ] bullet entity/particles for viewing bullets
+    - [x] bullet entity/particles for viewing bullets
     - [ ] hit indicator
     - [ ] damage indicator like fortnite or smthn
 - [ ] add automatic and manual
