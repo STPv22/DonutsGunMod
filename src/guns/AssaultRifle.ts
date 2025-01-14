@@ -9,11 +9,6 @@ export default function AssaultRifle() {
         this.$setCreativeTab(creativeMiscTab);
     }
 
-    ModAPI.addEventListener("update", ()=>{ //recoil update loop (client)
-        ModAPI.player.rotationPitch -= recoilSpeed;
-        recoilSpeed *= 0.7;
-    });
-
     function entityRayCast(player, world, range) {
         const HEADSHOT_MAX_DISTANCE_FROM_HEAD = 0.72;
         var eyePosition = player.getPositionEyes(0.0);
@@ -27,6 +22,49 @@ export default function AssaultRifle() {
         var isHeadshotInt = 0;
         var closestDistance = range;
 
+        // Particle handler
+        var enumParticleSmoke = ModAPI.reflect.getClassByName("EnumParticleTypes").staticVariables.SMOKE_NORMAL;
+        var eyeMod = 1.5;
+
+        // Player position
+        var playerX = player.posX;
+        var playerY = player.posY + eyeMod;
+        var playerZ = player.posZ;
+
+        // Target position
+        var targetX = targetPosition.xCoord;
+        var targetY = targetPosition.yCoord;
+        var targetZ = targetPosition.zCoord;
+
+        // Calculate direction vector
+        var dirX = targetX - playerX;
+        var dirY = targetY - playerY;
+        var dirZ = targetZ - playerZ;
+
+        // Calculate the distance between the player and the target
+        var distance = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+
+        // Normalize the direction vector
+        var stepX = dirX / distance;
+        var stepY = dirY / distance;
+        var stepZ = dirZ / distance;
+
+        // Define the number of particles and the step size
+        var numParticles = 75;
+        var stepSize = distance / numParticles;
+
+        // Spawn particles along the line
+        for (var i = 0; i <= numParticles; i++) {
+            var posX = playerX + stepX * i * stepSize;
+            var posY = playerY + stepY * i * stepSize;
+            var posZ = playerZ + stepZ * i * stepSize;
+            world.spawnParticle(enumParticleSmoke, posX, posY, posZ, 0, 0, 0, [0]);
+        }
+        // world.spawnParticle(enumParticleSmoke, player.posX, player.posY + eyeMod, player.posZ, 0, 0, 0, [0]);
+        // world.spawnParticle(enumParticleSmoke, player.posX, player.posY + eyeMod, player.posZ, 0, 0, 0, [0]);
+        // world.spawnParticle(enumParticleSmoke, targetPosition.xCoord, targetPosition.yCoord, targetPosition.zCoord, 0, 0, 0, [0]);
+        // world.spawnParticle(enumParticleSmoke, targetPosition.xCoord, targetPosition.yCoord, targetPosition.zCoord, 0, 0, 0, [0]);
+
         // Iterate through all entities to find the one the player is looking at
         for (var i = 0; i < entities.length; i++) {
             if (!entities[i]) {
@@ -39,9 +77,9 @@ export default function AssaultRifle() {
             var intercept = entityBB.calculateIntercept(eyePosition.getRef(), targetPosition.getRef());
 
             if (intercept != null) {
-                var distance = eyePosition.distanceTo(intercept.hitVec.getRef());
-                if (distance < closestDistance) {
-                    closestDistance = distance;
+                var distanceToEntity = eyePosition.distanceTo(intercept.hitVec.getRef());
+                if (distanceToEntity < closestDistance) {
+                    closestDistance = distanceToEntity;
                     closestEntity = entity;
                     isHeadshot = entity.getPositionEyes(0.0).distanceTo(intercept.hitVec.getRef()) < HEADSHOT_MAX_DISTANCE_FROM_HEAD;
                     if (isHeadshot) {
@@ -65,7 +103,7 @@ export default function AssaultRifle() {
     }
     nmi_AssaultRifle.prototype.$onItemUseFinish = function ($itemstack) {
         return $itemstack;
-    } 
+    }
     nmi_AssaultRifle.prototype.$getMaxItemUseDuration = function ($itemstack) {
         return 72000;
     }
@@ -80,6 +118,8 @@ export default function AssaultRifle() {
             var world = ModAPI.util.wrap($world);
             var entityplayer = ModAPI.util.wrap($player);
             var shotentitydata = entityRayCast(entityplayer, world, 32.0);
+            //brooooooo
+            //ModAPI.minecraft.fontRendererObj.drawString(ModAPI.util.str("hello, world!"), 10, 10, 1);
             entityplayer.setItemInUse($itemstack, nmi_AssaultRifle.prototype.$getMaxItemUseDuration($itemstack));
             if (shotentitydata != null){
                 if (world.isRemote) {
@@ -104,7 +144,7 @@ export default function AssaultRifle() {
         ).$setMaxStackSize(1);
         itemClass.staticMethods.registerItem.method(ModAPI.keygen.item("assaultrifle"), ModAPI.util.str("assaultrifle"), ar_item);
         ModAPI.items["assaultrifle"] = ar_item;
-        
+
         return ar_item;
     }
 
