@@ -1,10 +1,10 @@
-export default function AssaultRifle() {
+export default function SMGItem() {
     var DamageSourceClass = ModAPI.reflect.getClassByName("DamageSource");
     var creativeMiscTab = ModAPI.reflect.getClassById("net.minecraft.creativetab.CreativeTabs").staticVariables.tabMisc;
     var itemClass = ModAPI.reflect.getClassById("net.minecraft.item.Item");
     var itemSuper = ModAPI.reflect.getSuper(itemClass, (x) => x.length === 1);
 
-    var nmi_AssaultRifle = function nmi_AssaultRifle() {
+    var nmi_SMG = function nmi_SMG() {
         itemSuper(this); //Use super function to get block properties on this class.
         this.$setCreativeTab(creativeMiscTab);
     }
@@ -92,28 +92,28 @@ export default function AssaultRifle() {
         }
     }
 
-    ModAPI.reflect.prototypeStack(itemClass, nmi_AssaultRifle);
+    ModAPI.reflect.prototypeStack(itemClass, nmi_SMG);
     var hasShot = false;
-    nmi_AssaultRifle.prototype.$onPlayerStoppedUsing = function ($itemstack) {
+    nmi_SMG.prototype.$onPlayerStoppedUsing = function ($itemstack) {
         hasShot = false;
     }
-    nmi_AssaultRifle.prototype.$onItemUseFinish = function ($itemstack) {
+    nmi_SMG.prototype.$onItemUseFinish = function ($itemstack) {
         return $itemstack;
     }
-    nmi_AssaultRifle.prototype.$getMaxItemUseDuration = function ($itemstack) {
+    nmi_SMG.prototype.$getMaxItemUseDuration = function ($itemstack) {
         return 72000;
     }
-    nmi_AssaultRifle.prototype.$getItemUseAction = function ($itemstack) {
+    nmi_SMG.prototype.$getItemUseAction = function ($itemstack) {
         return ModAPI.reflect.getClassByName("EnumAction").staticVariables.DRINK;
     }
-    nmi_AssaultRifle.prototype.$onItemRightClick = function ($itemstack, $world, $player) {
+    nmi_SMG.prototype.$onItemRightClick = function ($itemstack, $world, $player) {
         if (!hasShot) {
             hasShot = true;
             var cactus = DamageSourceClass.staticVariables.cactus;
             var world = ModAPI.util.wrap($world);
             var entityplayer = ModAPI.util.wrap($player);
             var shotentitydata = entityRayCast(entityplayer, world, 32.0);
-            entityplayer.setItemInUse($itemstack, nmi_AssaultRifle.prototype.$getMaxItemUseDuration($itemstack));
+            entityplayer.setItemInUse($itemstack, nmi_SMG.prototype.$getMaxItemUseDuration($itemstack));
 
             if (shotentitydata != null){
                 if (world.isRemote) {
@@ -132,13 +132,13 @@ export default function AssaultRifle() {
     }
 
     function internal_reg() {
-        var ar_item = (new nmi_AssaultRifle()).$setUnlocalizedName(
-            ModAPI.util.str("assaultrifle")
+        var smg_item = (new nmi_SMG()).$setUnlocalizedName(
+            ModAPI.util.str("smg")
         ).$setMaxStackSize(1);
-        itemClass.staticMethods.registerItem.method(ModAPI.keygen.item("assaultrifle"), ModAPI.util.str("assaultrifle"), ar_item);
-        ModAPI.items["assaultrifle"] = ar_item;
+        itemClass.staticMethods.registerItem.method(ModAPI.keygen.item("smg"), ModAPI.util.str("smg"), smg_item);
+        ModAPI.items["smg"] = smg_item;
 
-        return ar_item;
+        return smg_item;
     }
 
     if (ModAPI.items) {
