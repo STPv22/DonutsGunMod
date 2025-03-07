@@ -1,5 +1,4 @@
 export default function PistolItem() {
-    var recoilSpeed = 1; //recoil controller
     var DamageSourceClass = ModAPI.reflect.getClassByName("DamageSource");
     var creativeMiscTab = ModAPI.reflect.getClassById("net.minecraft.creativetab.CreativeTabs").staticVariables.tabMisc;
     var itemClass = ModAPI.reflect.getClassById("net.minecraft.item.Item");
@@ -8,11 +7,6 @@ export default function PistolItem() {
         itemSuper(this); //Use super function to get block properties on this class.
         this.$setCreativeTab(creativeMiscTab);
     }
-
-    ModAPI.addEventListener("update", ()=>{ //recoil update loop (client)
-        ModAPI.player.rotationPitch -= recoilSpeed;
-        recoilSpeed *= 0.7;
-    });
 
     function entityRayCast(player, world, range) {
         const HEADSHOT_MAX_DISTANCE_FROM_HEAD = 0.72;
@@ -66,7 +60,6 @@ export default function PistolItem() {
         var shotentitydata = entityRayCast(entityplayer, world, 16.0);
         if (shotentitydata != null){
             if (world.isRemote) {
-                recoilSpeed += 4;
             } else {
                 shotentitydata.entity.attackEntityFrom(cactus, 10 + (16 * shotentitydata.intheadshot));
                 if (shotentitydata.headshot) {

@@ -3,6 +3,11 @@ export default function AssaultRifle() {
     var creativeMiscTab = ModAPI.reflect.getClassById("net.minecraft.creativetab.CreativeTabs").staticVariables.tabMisc;
     var itemClass = ModAPI.reflect.getClassById("net.minecraft.item.Item");
     var itemSuper = ModAPI.reflect.getSuper(itemClass, (x) => x.length === 1);
+
+    var recoilForce = 10;
+    var recoilRecovery = 0.5;
+    var recoilTimeUp = 50;
+
     var nmi_AssaultRifle = function nmi_AssaultRifle() {
         itemSuper(this); //Use super function to get block properties on this class.
         this.$setCreativeTab(creativeMiscTab);
@@ -90,6 +95,7 @@ export default function AssaultRifle() {
             return null;
         }
     }
+
     ModAPI.reflect.prototypeStack(itemClass, nmi_AssaultRifle);
     var hasShot = false;
     nmi_AssaultRifle.prototype.$onPlayerStoppedUsing = function ($itemstack) {
@@ -102,7 +108,6 @@ export default function AssaultRifle() {
         return 72000;
     }
     nmi_AssaultRifle.prototype.$getItemUseAction = function ($itemstack) {
-        //ill add an enum for GUN later
         return ModAPI.reflect.getClassByName("EnumAction").staticVariables.DRINK;
     }
     nmi_AssaultRifle.prototype.$onItemRightClick = function ($itemstack, $world, $player) {
@@ -112,12 +117,10 @@ export default function AssaultRifle() {
             var world = ModAPI.util.wrap($world);
             var entityplayer = ModAPI.util.wrap($player);
             var shotentitydata = entityRayCast(entityplayer, world, 32.0);
-            //brooooooo
-            //ModAPI.minecraft.fontRendererObj.drawString(ModAPI.util.str("hello, world!"), 10, 10, 1);
             entityplayer.setItemInUse($itemstack, nmi_AssaultRifle.prototype.$getMaxItemUseDuration($itemstack));
+
             if (shotentitydata != null){
                 if (world.isRemote) {
-
                 } else {
                     shotentitydata.entity.attackEntityFrom(cactus, 10 + (16 * shotentitydata.intheadshot));
                     if (shotentitydata.headshot) {
